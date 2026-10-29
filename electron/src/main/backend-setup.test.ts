@@ -60,7 +60,8 @@ vi.mock('node:fs', async (importOriginal) => {
   };
 });
 vi.mock('node:fs/promises', () => ({ rm: mocks.rm }));
-vi.mock('./runtime-project', () => ({
+vi.mock('./runtime-project', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./runtime-project')>()),
   MISSING_SYSTEM_LIBRARY_CODE: 'MISSING_SYSTEM_LIBRARY',
   OUTDATED_SYSTEM_LIBRARY_CODE: 'OUTDATED_SYSTEM_LIBRARY',
   RUNTIME_FILES_LOCKED_CODE: 'RUNTIME_FILES_LOCKED',
@@ -957,3 +958,27 @@ it('lets a failed start move the runtime to another folder', async () => {
   expect(() => supervisor.setRuntimeLocation(null)).toThrow('runtime_location_unavailable');
   await supervisor.shutdown();
 });
+
+// The requirement must be available before any install attempt, not just ENOSPC.
+it.each(['darwin', 'win32', 'linux'] as const)(
+  'publishes the CPU runtime disk requirement on %s before installation',
+  async (platform) => {
+    vi.spyOn(process, 'platform', 'get').mockReturnValue(platform);
+    vi.spyOn(process, 'arch', 'get').mockReturnValue(platform === 'darwin' ? 'arm64' : 'x64');
+    vi.stubEnv('OMNIVOICE_TORCH_VARIANT', 'cpu');
+    vi.stubEnv('OMNIVOICE_BACKEND_CMD', '');
+    vi.stubEnv('VOICESTUDIO_SKIP_BACKEND', '');
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => {
+        throw new Error('no backend');
+      }),
+    );
+    const supervisor = new BackendSupervisor();
+    await supervisor.start();
+    expect(supervisor.status.stage).toBe('setup_required');
+    expect(supervisor.status.setupRequiredGib).toBe(5);
+    expect(mocks.install).not.toHaveBeenCalled();
+    await supervisor.shutdown();
+  },
+);

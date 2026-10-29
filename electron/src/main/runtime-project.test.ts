@@ -16,6 +16,7 @@ import { PYPI_SPEED_SAMPLE_BYTES } from './pypi-mirror';
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import {
   installRuntime,
+  runtimeRequiredGib,
   promoteLegacyRuntimeCaches,
   CUDNN8_COMPAT_PIN,
   MISSING_SYSTEM_LIBRARY_CODE,
@@ -45,6 +46,22 @@ import {
 } from './runtime-project';
 
 vi.mock('./runtime-download', () => ({ downloadRuntimeInstaller: vi.fn() }));
+
+it.each([
+  ['darwin', 'default', 5],
+  ['darwin', 'cpu', 5],
+  ['linux', 'cpu', 5],
+  ['win32', 'cpu', 5],
+  ['linux', 'default', 9],
+  ['win32', 'default', 9],
+  ['linux', 'rocm', 9],
+  ['win32', 'rocm', 9],
+] as const)(
+  'publishes the %s/%s runtime preflight minimum as %s GiB',
+  (platform, variant, expected) => {
+    expect(runtimeRequiredGib(platform, variant)).toBe(expected);
+  },
+);
 vi.mock('./wheel-prefetch', async (importOriginal) => {
   const actual = await importOriginal<typeof import('./wheel-prefetch')>();
   return { ...actual, httpsRangeTransport: vi.fn(actual.httpsRangeTransport) };
@@ -487,7 +504,13 @@ describe('packaged runtime setup', () => {
         return undefined;
       });
       await installRuntime(
-        bundle, project, 'uv', run, new AbortController().signal, undefined, 'global',
+        bundle,
+        project,
+        'uv',
+        run,
+        new AbortController().signal,
+        undefined,
+        'global',
       );
       expect(importFailures).toBe(existing ? 1 : 0);
       for (const [, args] of run.mock.calls) {
