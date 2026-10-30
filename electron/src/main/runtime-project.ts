@@ -221,8 +221,17 @@ const CUDNN8_PROBE_PREFIX = 'VOICESTUDIO_CUDNN8_PROBE=';
 /** Shared by the install preflight and the first-run status shown before setup. */
 export function runtimeRequiredGib(
   platform: NodeJS.Platform = process.platform,
-  variant: TorchVariant = resolveTorchVariant().variant,
+  variant?: TorchVariant,
 ): number {
+  if (variant === undefined) {
+    try {
+      variant = resolveTorchVariant(process.env, platform).variant;
+    } catch {
+      // Status estimates must remain readable for unsupported overrides. Installation
+      // still validates the actual selection before calling this helper.
+      variant = 'default';
+    }
+  }
   // macOS has no CUDA wheels; CPU installs also keep a smaller uv cache copy.
   return platform === 'darwin' || variant === 'cpu' ? 5 : 9;
 }

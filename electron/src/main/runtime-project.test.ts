@@ -126,6 +126,20 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
 });
 
+it('estimates disk space without accepting unsupported Windows ARM64 ROCm installs', async () => {
+  forcePlatform('win32');
+  vi.spyOn(process, 'arch', 'get').mockReturnValue('arm64');
+  vi.stubEnv('OMNIVOICE_TORCH_VARIANT', 'rocm');
+  expect(runtimeRequiredGib()).toBe(9);
+  const { bundle, project } = await fixture();
+  const run = vi.fn();
+  await expect(
+    installRuntime(bundle, project, null, run, new AbortController().signal),
+  ).rejects.toThrow('Windows ROCm requires Windows x64 Python 3.12 (cp312).');
+  expect(run).not.toHaveBeenCalled();
+  expect(downloadRuntimeInstaller).not.toHaveBeenCalled();
+});
+
 describe('packaged runtime setup', () => {
   it.each(['win32', 'linux'] as const)(
     'does not import torch for the CUDA compatibility probe on a %s CPU runtime',
