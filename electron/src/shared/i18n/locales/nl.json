@@ -2861,13 +2861,5 @@
     "error": "Talen konden niet worden gecontroleerd",
     "modelLanguages": "Talen voor dit model",
     "changeModel": "Model wijzigen"
-  },
-  "modelSettings": {
-    "localModelEnvironmentOverride": "Een omgevingsvariabele heeft voorrang; de opgeslagen map wordt niet gebruikt:",
-    "localModelLabel": "Lokaal model",
-    "localModelDefault": "Standaardmodel van de engine",
-    "localModelChoose": "Map kiezen",
-    "localModelReset": "Standaard gebruiken",
-    "localModelHint": "Alleen volledige OmniVoice- of gekwantiseerde MLX Qwen3-TTS VoiceDesign-checkpoints. Ontbrekende of incompatibele lokale bestanden geven een fout, nooit een automatische download."
   }
 }

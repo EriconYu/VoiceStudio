@@ -2861,13 +2861,5 @@
     "error": "Impossible de vérifier les langues",
     "modelLanguages": "Langues de ce modèle",
     "changeModel": "Changer de modèle"
-  },
-  "modelSettings": {
-    "localModelEnvironmentOverride": "Une variable d’environnement est prioritaire ; le dossier enregistré n’est pas utilisé :",
-    "localModelLabel": "Modèle local",
-    "localModelDefault": "Modèle par défaut du moteur",
-    "localModelChoose": "Choisir un dossier",
-    "localModelReset": "Utiliser le modèle par défaut",
-    "localModelHint": "Uniquement les checkpoints complets OmniVoice ou MLX Qwen3-TTS VoiceDesign quantifiés. Les fichiers locaux manquants ou incompatibles provoquent une erreur, jamais un téléchargement automatique."
   }
 }

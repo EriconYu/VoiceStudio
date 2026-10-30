@@ -2861,13 +2861,5 @@
     "error": "言語を確認できませんでした",
     "modelLanguages": "このモデルの言語",
     "changeModel": "モデルを変更"
-  },
-  "modelSettings": {
-    "localModelEnvironmentOverride": "環境変数による上書きが有効です。保存したフォルダーは使用されていません：",
-    "localModelLabel": "ローカルモデル",
-    "localModelDefault": "エンジンの既定モデル",
-    "localModelChoose": "フォルダーを選択",
-    "localModelReset": "既定に戻す",
-    "localModelHint": "完全な OmniVoice または量子化済み MLX Qwen3-TTS VoiceDesign チェックポイントのみ対応。ローカルファイルが不足または非互換の場合はエラーになり、自動ダウンロードは行いません。"
   }
 }

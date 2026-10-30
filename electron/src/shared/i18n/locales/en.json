@@ -3327,13 +3327,5 @@
     "error": "Could not check languages",
     "modelLanguages": "Languages for this model",
     "changeModel": "Change model"
-  },
-  "modelSettings": {
-    "localModelEnvironmentOverride": "Environment override is active; the saved folder is not in use:",
-    "localModelLabel": "Local model",
-    "localModelDefault": "Default engine model",
-    "localModelChoose": "Choose folder",
-    "localModelReset": "Use default",
-    "localModelHint": "Complete OmniVoice or quantized MLX Qwen3-TTS VoiceDesign checkpoints only. Missing or incompatible local assets cause an error, never an automatic download."
   }
 }

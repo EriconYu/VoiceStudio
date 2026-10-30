@@ -3327,13 +3327,5 @@
     "error": "Non se puideron comprobar os idiomas",
     "modelLanguages": "Idiomas para este modelo",
     "changeModel": "Cambiar modelo"
-  },
-  "modelSettings": {
-    "localModelEnvironmentOverride": "Unha variable de contorno ten prioridade; non se usa o cartafol gardado:",
-    "localModelLabel": "Modelo local",
-    "localModelDefault": "Modelo predeterminado do motor",
-    "localModelChoose": "Escoller cartafol",
-    "localModelReset": "Usar o predeterminado",
-    "localModelHint": "Só puntos de control completos de OmniVoice ou MLX Qwen3-TTS VoiceDesign cuantizados. Os ficheiros locais ausentes ou incompatibles provocan un erro, nunca unha descarga automática."
   }
 }

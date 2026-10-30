@@ -2861,13 +2861,5 @@
     "error": "Sprachen konnten nicht geprüft werden",
     "modelLanguages": "Sprachen dieses Modells",
     "changeModel": "Modell wechseln"
-  },
-  "modelSettings": {
-    "localModelEnvironmentOverride": "Eine Umgebungsvariable hat Vorrang; der gespeicherte Ordner wird nicht verwendet:",
-    "localModelLabel": "Lokales Modell",
-    "localModelDefault": "Standardmodell der Engine",
-    "localModelChoose": "Ordner auswählen",
-    "localModelReset": "Standard verwenden",
-    "localModelHint": "Nur vollständige OmniVoice- oder quantisierte MLX-Qwen3-TTS-VoiceDesign-Checkpoints. Fehlende oder inkompatible lokale Dateien führen zu einem Fehler, niemals zu einem automatischen Download."
   }
 }

@@ -2861,13 +2861,5 @@
     "error": "Не вдалося перевірити мови",
     "modelLanguages": "Мови цієї моделі",
     "changeModel": "Змінити модель"
-  },
-  "modelSettings": {
-    "localModelEnvironmentOverride": "Змінна середовища має пріоритет; збережена тека не використовується:",
-    "localModelLabel": "Локальна модель",
-    "localModelDefault": "Типова модель рушія",
-    "localModelChoose": "Вибрати теку",
-    "localModelReset": "Використовувати типову",
-    "localModelHint": "Лише повні контрольні точки OmniVoice або квантовані MLX Qwen3-TTS VoiceDesign. Відсутні або несумісні локальні файли спричиняють помилку, а не автоматичне завантаження."
   }
 }
