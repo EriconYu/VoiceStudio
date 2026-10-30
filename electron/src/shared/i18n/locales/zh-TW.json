@@ -2861,5 +2861,13 @@
     "error": "無法檢查語言",
     "modelLanguages": "此模型的語言",
     "changeModel": "更換模型"
+  },
+  "modelSettings": {
+    "localModelEnvironmentOverride": "環境變數覆寫已啟用，目前未使用已儲存的資料夾：",
+    "localModelLabel": "本機模型",
+    "localModelDefault": "引擎預設模型",
+    "localModelChoose": "選擇資料夾",
+    "localModelReset": "使用預設模型",
+    "localModelHint": "僅支援完整的 OmniVoice 或量化 MLX Qwen3-TTS VoiceDesign 檢查點。本機檔案遺失或不相容時將顯示錯誤，不會自動下載。"
   }
 }

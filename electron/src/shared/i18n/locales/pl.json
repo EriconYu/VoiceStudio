@@ -2861,5 +2861,13 @@
     "error": "Nie udało się sprawdzić języków",
     "modelLanguages": "Języki tego modelu",
     "changeModel": "Zmień model"
+  },
+  "modelSettings": {
+    "localModelEnvironmentOverride": "Zmienna środowiskowa ma pierwszeństwo; zapisany folder nie jest używany:",
+    "localModelLabel": "Model lokalny",
+    "localModelDefault": "Domyślny model silnika",
+    "localModelChoose": "Wybierz folder",
+    "localModelReset": "Użyj domyślnego",
+    "localModelHint": "Tylko kompletne checkpointy OmniVoice lub skwantyzowane MLX Qwen3-TTS VoiceDesign. Brakujące lub niezgodne pliki lokalne powodują błąd, nigdy automatyczne pobieranie."
   }
 }

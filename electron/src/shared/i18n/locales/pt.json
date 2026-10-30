@@ -2861,5 +2861,13 @@
     "error": "Não foi possível verificar os idiomas",
     "modelLanguages": "Idiomas deste modelo",
     "changeModel": "Alterar modelo"
+  },
+  "modelSettings": {
+    "localModelEnvironmentOverride": "Uma variável de ambiente tem prioridade; a pasta salva não está em uso:",
+    "localModelLabel": "Modelo local",
+    "localModelDefault": "Modelo padrão do motor",
+    "localModelChoose": "Escolher pasta",
+    "localModelReset": "Usar o padrão",
+    "localModelHint": "Apenas checkpoints completos do OmniVoice ou MLX Qwen3-TTS VoiceDesign quantizados. Arquivos locais ausentes ou incompatíveis geram um erro, nunca um download automático."
   }
 }

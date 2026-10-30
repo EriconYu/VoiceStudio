@@ -2861,5 +2861,13 @@
     "error": "Không thể kiểm tra ngôn ngữ",
     "modelLanguages": "Ngôn ngữ của mô hình này",
     "changeModel": "Đổi mô hình"
+  },
+  "modelSettings": {
+    "localModelEnvironmentOverride": "Biến môi trường đang được ưu tiên; thư mục đã lưu không được sử dụng:",
+    "localModelLabel": "Mô hình cục bộ",
+    "localModelDefault": "Mô hình mặc định của bộ máy",
+    "localModelChoose": "Chọn thư mục",
+    "localModelReset": "Dùng mặc định",
+    "localModelHint": "Chỉ hỗ trợ checkpoint OmniVoice đầy đủ hoặc MLX Qwen3-TTS VoiceDesign đã lượng tử hóa. Tệp cục bộ bị thiếu hoặc không tương thích sẽ gây lỗi, không tự động tải xuống."
   }
 }

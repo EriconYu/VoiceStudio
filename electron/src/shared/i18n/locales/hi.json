@@ -2861,5 +2861,13 @@
     "error": "भाषाओं की जाँच नहीं हो सकी",
     "modelLanguages": "इस मॉडल की भाषाएँ",
     "changeModel": "मॉडल बदलें"
+  },
+  "modelSettings": {
+    "localModelEnvironmentOverride": "पर्यावरण चर को प्राथमिकता दी गई है; सहेजा गया फ़ोल्डर उपयोग में नहीं है:",
+    "localModelLabel": "स्थानीय मॉडल",
+    "localModelDefault": "इंजन का डिफ़ॉल्ट मॉडल",
+    "localModelChoose": "फ़ोल्डर चुनें",
+    "localModelReset": "डिफ़ॉल्ट उपयोग करें",
+    "localModelHint": "केवल पूर्ण OmniVoice या क्वांटाइज़ किए गए MLX Qwen3-TTS VoiceDesign चेकपॉइंट समर्थित हैं। स्थानीय फ़ाइलें गायब या असंगत होने पर त्रुटि दिखेगी, अपने आप डाउनलोड नहीं होगा।"
   }
 }

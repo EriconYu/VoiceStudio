@@ -2861,5 +2861,13 @@
     "error": "ตรวจสอบภาษาไม่ได้",
     "modelLanguages": "ภาษาสำหรับโมเดลนี้",
     "changeModel": "เปลี่ยนโมเดล"
+  },
+  "modelSettings": {
+    "localModelEnvironmentOverride": "ตัวแปรสภาพแวดล้อมมีผลเหนือกว่า จึงไม่ได้ใช้โฟลเดอร์ที่บันทึกไว้:",
+    "localModelLabel": "โมเดลในเครื่อง",
+    "localModelDefault": "โมเดลเริ่มต้นของเอนจิน",
+    "localModelChoose": "เลือกโฟลเดอร์",
+    "localModelReset": "ใช้ค่าเริ่มต้น",
+    "localModelHint": "รองรับเฉพาะเช็กพอยต์ OmniVoice ที่ครบถ้วน หรือ MLX Qwen3-TTS VoiceDesign แบบควอนไทซ์ หากไฟล์ในเครื่องขาดหายหรือไม่เข้ากันจะแสดงข้อผิดพลาด โดยไม่ดาวน์โหลดอัตโนมัติ"
   }
 }
