@@ -311,3 +311,58 @@ def test_missing_persisted_omnivoice_does_not_resolve_default(api, tmp_path):
     (model / "config.json").unlink()
     with pytest.raises(paths.LocalModelError):
         mm.resolve_omnivoice_checkpoint()
+
+
+@pytest.mark.parametrize("replacement", ["symlink", "directory"])
+def test_discovered_grant_rejects_replaced_root(api, tmp_path, replacement):
+    client, cap, mm, *_ = api
+    model = checkpoint(tmp_path / "model")
+    candidate = next(c for c in client.post(URL + "/discover", json=cap(model)).json()["candidates"] if c["validation"]["status"] == "valid")
+    model.rename(tmp_path / "original")
+    if replacement == "symlink":
+        model.symlink_to(checkpoint(tmp_path / "other"), target_is_directory=True)
+    else:
+        checkpoint(model)
+    response = client.put(URL, json={"authorization": candidate["authorization"]})
+    assert response.status_code == 403
+    assert paths.get("tts", "omnivoice") is None
+    mm.unload_shared_model.assert_not_called()
+
+
+@pytest.mark.parametrize("discovered", [False, True])
+@pytest.mark.parametrize("asset", ["config.json", "model.safetensors", "tokenizer.json", "audio_tokenizer", "audio_tokenizer/model.safetensors", "audio_tokenizer/preprocessor_config.json"])
+def test_linked_checkpoint_assets_cannot_escape(api, tmp_path, asset, discovered):
+    client, cap, mm, *_ = api
+    model = checkpoint(tmp_path / "model")
+    token = cap(model)
+    if discovered:
+        candidate = next(c for c in client.post(URL + "/discover", json=token).json()["candidates"] if c["validation"]["status"] == "valid")
+        token = {"authorization": candidate["authorization"]}
+    target = model / asset
+    outside = tmp_path / "outside"
+    target.rename(outside)
+    target.symlink_to(outside, target_is_directory=outside.is_dir())
+    response = client.put(URL, json=token)
+    assert response.status_code == 400
+    assert "symlink" in response.json()["detail"].lower()
+    assert "copy" in response.json()["detail"].lower()
+    assert paths.get("tts", "omnivoice") is None
+
+
+def test_discovered_identity_is_rechecked_immediately_before_persistence(api, tmp_path, monkeypatch):
+    client, cap, mm, *_ = api
+    model = checkpoint(tmp_path / "model")
+    candidate = next(c for c in client.post(URL + "/discover", json=cap(model)).json()["candidates"] if c["validation"]["status"] == "valid")
+    validate = paths.validate
+
+    def swap_after_validation(*args, **kwargs):
+        result = validate(*args, **kwargs)
+        model.rename(tmp_path / "original")
+        checkpoint(model)
+        return result
+
+    monkeypatch.setattr(paths, "validate", swap_after_validation)
+    response = client.put(URL, json={"authorization": candidate["authorization"]})
+    assert response.status_code == 403
+    assert paths.get("tts", "omnivoice") is None
+    mm.unload_shared_model.assert_not_called()

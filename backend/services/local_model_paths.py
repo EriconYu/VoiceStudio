@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from core import prefs
+from core.path_authorization import LocalModelSelection
 
 PREF_KEY = "engine_local_model_paths"
 SUPPORTED = {"tts": {"omnivoice", "mlx-audio"}}
@@ -53,11 +54,18 @@ def _scan(root: Path, budget: dict):
             yield entry
 
 
+def _safe_asset(path: Path) -> Path:
+    if path.is_symlink() or path.parent.is_symlink():
+        raise LocalModelError("Symlinked checkpoint assets are not supported; copy the actual files into the checkpoint folder and select it again")
+    return path
+
+
 def _metadata(root: Path, name: str = "config.json", *, budget: dict | None = None) -> dict[str, Any]:
+    if budget is not None and root.is_symlink():
+        raise _DiscoveryIncomplete("symlink_directory", root, "Symlinked asset directories are skipped; copy actual assets into the checkpoint folder")
+    _safe_asset(root / name)
     try:
         _check_deadline(budget, root)
-        if budget is not None and root.is_symlink():
-            raise _DiscoveryIncomplete("symlink_directory", root, "Symlinked asset directories are skipped; choose the actual checkpoint folder")
         if budget is None:
             text = (root / name).read_text(encoding="utf-8")
         else:
@@ -93,12 +101,15 @@ def _has_weights(root: Path, *, budget: dict | None = None) -> bool:
                 return False
             for name in mapping.values():
                 _check_deadline(budget, root)
+                if isinstance(name, str) and Path(name).name == name:
+                    _safe_asset(root / name)
                 if (not isinstance(name, str) or Path(name).name != name
                         or not (root / name).is_file()
                         or (root / name).stat().st_size <= 0):
                     return False
         return True
     weights = (p for pattern in ("*.safetensors", "pytorch_model.bin") for p in root.glob(pattern)) if files is None else (p for p in files if p.name.endswith(".safetensors") or p.name == "pytorch_model.bin")
+    weights = [_safe_asset(p) for p in weights]
     return any(p.is_file() and p.stat().st_size > 0 for p in weights)
 
 
@@ -108,7 +119,11 @@ def validate(family: str, engine_id: str, raw_path: str, *, _budget: dict | None
     if not isinstance(raw_path, str) or not raw_path.strip():
         raise LocalModelError("Choose a local model folder, or clear the selection")
     try:
-        path = Path(os.path.realpath(os.path.expanduser(raw_path)))
+        if isinstance(raw_path, LocalModelSelection):
+            raw_path.check()
+            path = Path(raw_path)
+        else:
+            path = Path(os.path.realpath(os.path.expanduser(raw_path)))
         if not path.is_dir():
             raise LocalModelError("The selected local model folder does not exist")
         metadata = _metadata(path, budget=_budget)
@@ -130,12 +145,12 @@ def validate(family: str, engine_id: str, raw_path: str, *, _budget: dict | None
             asset = "speech_tokenizer"
         if not _has_weights(path, budget=_budget):
             raise LocalModelError("The selected local model folder has missing or unsupported weight files")
-        if not (path / "tokenizer.json").is_file():
+        if not _safe_asset(path / "tokenizer.json").is_file():
             raise LocalModelError("The local checkpoint is missing tokenizer.json")
         _metadata(path / asset, budget=_budget)
         if not _has_weights(path / asset, budget=_budget):
             raise LocalModelError(f"The local checkpoint is missing {asset} weights")
-        if engine_id == "omnivoice" and not (path / asset / "preprocessor_config.json").is_file():
+        if engine_id == "omnivoice" and not _safe_asset(path / asset / "preprocessor_config.json").is_file():
             raise LocalModelError("The audio tokenizer is missing preprocessor_config.json")
         return str(path)
     except OSError as exc:
@@ -300,6 +315,10 @@ def discover(family: str, engine_id: str, parent: str, limit: int = 100) -> dict
 
 def set_path(family: str, engine_id: str, path: str) -> str:
     validated = validate(family, engine_id, path)
+    # Recheck after validation, immediately before persistence. This is not an
+    # fd-atomic load: a same-user writer can still mutate files after this check.
+    if isinstance(path, LocalModelSelection):
+        path.check()
     prefs.update_mapping(PREF_KEY, {f"{family}/{engine_id}": validated})
     return validated
 

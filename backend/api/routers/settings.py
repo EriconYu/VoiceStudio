@@ -1148,6 +1148,7 @@ def get_local_model(family: str, engine_id: str):
 
 async def _change_local_model(family: str, engine_id: str, path: str | None):
     from services import local_model_paths, model_manager
+    from core.path_authorization import PathAuthorizationError
     # This lock is the same exclusion held by OmniVoice generation/load routes.
     # Reject instead of waiting indefinitely behind a long synthesis.
     if model_manager._model_lock.locked():
@@ -1159,6 +1160,8 @@ async def _change_local_model(family: str, engine_id: str, path: str | None):
             raise HTTPException(409, "An engine is loading; try again when it finishes")
         try:
             return local_model_paths.change(family, engine_id, path)
+        except PathAuthorizationError as exc:
+            raise HTTPException(403, detail=str(exc)) from exc
         except local_model_paths.EngineBusyError as exc:
             raise HTTPException(409, detail=str(exc)) from exc
         except local_model_paths.LocalModelError as exc:
